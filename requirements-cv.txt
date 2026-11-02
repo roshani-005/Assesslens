@@ -1,0 +1,3 @@
+# Optional PyTorch-backed face detector (MTCNN).
+# Install after requirements.txt when you want the deep-learning backend.
+facenet-pytorch>=2.6.0
