@@ -102,9 +102,9 @@ pytest -q
 
 See docs/EVALUATION_PROTOCOL.md. Do not claim accuracy or latency improvements until the same test set and hardware have been used for a documented comparison.
 
-## Current limitations and not-yet-implemented items
 
-- **ONNX export/runtime and ONNX-specific optimisation are not implemented.** MTCNN is currently run through PyTorch.
+
+- **ONNX export/runtime and ONNX-specific optimisation.** MTCNN is currently run through PyTorch.
 - Detector batching and a measured before/after optimisation result are not implemented.
 - No controlled CPU-vs-GPU comparison or concurrent API load test is included; the benchmark script helps collect local whole-video timings.
 - Automated VLM prompt-variant experiments are not implemented.
