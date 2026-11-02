@@ -18,6 +18,8 @@ with st.sidebar:
     consent = st.checkbox("I have consent to analyze this recording.")
     delete_after = st.checkbox("Delete temporary files after processing", value=True)
     model_size = st.selectbox("Whisper model", ["tiny", "base", "small"], index=1)
+    face_backend = st.selectbox("Face detector", ["haar", "mtcnn"], help="MTCNN requires optional PyTorch dependencies from requirements-cv.txt.")
+    face_device = st.selectbox("Detector device", ["auto", "cpu", "cuda:0"], help="CUDA requires a compatible PyTorch installation and NVIDIA GPU.")
     st.warning("Use mock interviews or recordings from people who explicitly agreed. Do not use this tool to rank candidates.")
 
 uploaded = st.file_uploader("Upload a mock interview video", type=["mp4", "mov", "mkv", "webm"])
@@ -42,7 +44,7 @@ if uploaded and st.button("Analyze recording", type="primary"):
             st.error(message)
             st.stop()
         with st.spinner("Checking recording quality..."):
-            quality = inspect_video(video_path)
+            quality = inspect_video(video_path, face_backend=face_backend, device=None if face_device == "auto" else face_device)
         audio_path = temp_root / "audio.wav"
         with st.spinner("Extracting audio..."):
             extract_audio(video_path, audio_path)
@@ -64,6 +66,7 @@ if uploaded and st.button("Analyze recording", type="primary"):
         a.metric("Video duration", f"{quality['duration_sec']:.1f} sec")
         b.metric("Frames sampled", quality["frames_sampled"])
         c.metric("Frames with face", f"{quality['face_presence_rate']:.0%}" if quality["face_presence_rate"] is not None else "N/A")
+        st.caption("Face detector: " + str(quality.get("face_backend", "unknown")) + " · device: " + str(quality.get("face_device", "unknown")))
         st.subheader("Recording quality")
         st.json({k: v for k, v in quality.items() if k not in {"sampled_frames"}})
         st.subheader("Speech analytics")
