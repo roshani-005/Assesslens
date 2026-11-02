@@ -8,7 +8,7 @@ import os
 import tempfile
 import time
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 
 from assesslens.media import inspect_video, validate_video
 
@@ -30,7 +30,7 @@ def health():
 @app.post("/v1/video/inspect")
 async def inspect_uploaded_video(
     file: UploadFile = File(...),
-    consent_confirmed: bool = False,
+    consent_confirmed: bool = Form(...),
 ):
     """Inspect sampled frames after the caller confirms recording consent."""
     if not consent_confirmed:
